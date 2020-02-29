@@ -58,22 +58,16 @@ const checkMatchingNumbers = (userNumbers, dataset) => {
 // Check the prize according to the best matching numbers
 const getPrize = (calculatedResponse, dataset) => {
   let calculatedPrize = {};
-  let data;
+  let data = dataset[calculatedResponse.matchingIndex];
   
   if (calculatedResponse.highestMatch > 4 || (calculatedResponse.highestMatch === 4 && calculatedResponse.zusatzzahl)) {
-    console.log('erster index', calculatedResponse.matchingIndex);
-    data = dataset[calculatedResponse.matchingIndex];
     dataPrize = dataset[calculatedResponse.matchingIndex];
   } else if ((calculatedResponse.highestMatch < 4 && calculatedResponse.highestMatch > 2) 
     || (calculatedResponse.highestMatch === 4 && !calculatedResponse.zusatzzahl)) {
-    console.log('zweiter index', calculatedResponse.matchingIndex);
-    data = dataset[calculatedResponse.matchingIndex];
     dataPrize = dataset[calculatedResponse.matchingIndex + 1];
   } else {
     return {};
   }
-
-  console.log('highest match', calculatedResponse.highestMatch);
 
   switch(calculatedResponse.highestMatch) {
     case 3:
@@ -81,13 +75,13 @@ const getPrize = (calculatedResponse, dataset) => {
         calculatedPrize = {
           bestFittingNumbers: [data.Zahl1, data.Zahl2, data.Zahl3, data.Zahl4, data.Zahl5, data.Zahl6, data.Zusatzzahl],
           amountWon: dataPrize.Quote_2_6,
-          date: data.date
+          date: data.Datum + data.date
         }
       } else {
         calculatedPrize = {
           bestFittingNumbers: [data.Zahl1, data.Zahl2, data.Zahl3, data.Zahl4, data.Zahl5, data.Zahl6, data.Zusatzzahl],
           amountWon: dataPrize.Quote_3_7,
-          date: data.date
+          date: data.Datum + data.date
         }
       }
       break;
@@ -96,13 +90,13 @@ const getPrize = (calculatedResponse, dataset) => {
         calculatedPrize = {
           bestFittingNumbers: [data.Zahl1, data.Zahl2, data.Zahl3, data.Zahl4, data.Zahl5, data.Zahl6, data.Zusatzzahl],
           amountWon: dataPrize.Quote_4_8,
-          date: data.date
+          date: data.Datum + data.date
         }
       } else {
         calculatedPrize = {
           bestFittingNumbers: [data.Zahl1, data.Zahl2, data.Zahl3, data.Zahl4, data.Zahl5, data.Zahl6, data.Zusatzzahl],
           amountWon: data.Quote_1_5,
-          date: data.date
+          date: data.Datum + data.date
         }
       }
       break;
@@ -111,13 +105,13 @@ const getPrize = (calculatedResponse, dataset) => {
         calculatedPrize = {
           bestFittingNumbers: [data.Zahl1, data.Zahl2, data.Zahl3, data.Zahl4, data.Zahl5, data.Zahl6, data.Zusatzzahl],
           amountWon: data.Quote_2_6,
-          date: data.date
+          date: data.Datum + data.date
         }
       } else {
         calculatedPrize = {
           bestFittingNumbers: [data.Zahl1, data.Zahl2, data.Zahl3, data.Zahl4, data.Zahl5, data.Zahl6, data.Zusatzzahl],
           amountWon: data.Quote_3_7,
-          date: data.date
+          date: data.Datum + data.date
         }
       }
       break;
@@ -125,12 +119,12 @@ const getPrize = (calculatedResponse, dataset) => {
       calculatedPrize = {
         bestFittingNumbers: [data.Zahl1, data.Zahl2, data.Zahl3, data.Zahl4, data.Zahl5, data.Zahl6, data.Zusatzzahl],
         amountWon: data.Quote_1_5,
-        date: data.date
+        date: data.Datum + data.date
       }
       break;
     default:
       // todo
-      console.log('Nix');
+      console.log('nothing to do here.');
   }
 
   return calculatedPrize;
@@ -141,13 +135,16 @@ app.get('/', (req, res) => {
   const numbers = JSON.parse(req.query.numbers);
   console.log(req.query.numbers);
 
-  let calculatedMatchingNumbers = checkMatchingNumbers(numbers, dataManager.dataOf2019);
-  let calculatedPrize = getPrize(calculatedMatchingNumbers, dataManager.dataOf2019);
+  let calculatedMatchingNumbers = checkMatchingNumbers(numbers, dataManager.accData);
+  let calculatedPrize = getPrize(calculatedMatchingNumbers, dataManager.accData);
   
-  let date = new Date();
+  let day = calculatedPrize.date.slice(0,2);
+  let month = calculatedPrize.date.slice(3,5);
+  let year = calculatedPrize.date.slice(6,10);
+
   let serverResponse = {
     data: {
-      lastAppearence: '',
+      lastAppearence: new Date(parseInt(year), parseInt(month) -1 ,parseInt(day) + 1),
       bestFittingNumbers: calculatedPrize.bestFittingNumbers,
       propability: predictionService.calculate(numbers),
       winAmount: calculatedPrize.amountWon,
