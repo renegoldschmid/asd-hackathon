@@ -20,16 +20,16 @@ const calculate = (inputFromUser,numbers) =>{
     },{});
 
 
-    const percentages =Object.entries(inputFromUser).reduce((acc,[numberPosition,drawnNumber])=>{
+    return Object.entries(inputFromUser).reduce((acc,[numberPosition,drawnNumber])=>{
         const occurrance = map[numberPosition][drawnNumber];
         const percentage =  occurrance/count*100 ;
         return [...acc, percentage];
     },[]);
-    const sum = percentages.reduce((sum,percentage)=>{
+    /*const sum = percentages.reduce((sum,percentage)=>{
         return sum +percentage;
     },0)
 
-    return sum/6;
+    return sum/6;*/
 };
 
 // extrahieren der Lottoziehung in eine map {position der Zahl} => {gezogerne Nummer}
