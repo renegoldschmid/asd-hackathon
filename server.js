@@ -59,6 +59,7 @@ const checkMatchingNumbers = (userNumbers, dataset) => {
 const getPrize = (calculatedResponse, dataset) => {
   let calculatedPrize = {};
   let data = dataset[calculatedResponse.matchingIndex];
+  console.log(calculatedResponse.zusatzzahl)
   
   if (calculatedResponse.highestMatch > 4 || (calculatedResponse.highestMatch === 4 && calculatedResponse.zusatzzahl)) {
     dataPrize = dataset[calculatedResponse.matchingIndex];
@@ -95,7 +96,7 @@ const getPrize = (calculatedResponse, dataset) => {
       } else {
         calculatedPrize = {
           bestFittingNumbers: [data.Zahl1, data.Zahl2, data.Zahl3, data.Zahl4, data.Zahl5, data.Zahl6, data.Zusatzzahl],
-          amountWon: data.Quote_1_5,
+          amountWon: dataPrize.Quote_1_5,
           date: data.Datum + data.date
         }
       }
@@ -104,13 +105,13 @@ const getPrize = (calculatedResponse, dataset) => {
       if (calculatedResponse.zusatzzahl) {
         calculatedPrize = {
           bestFittingNumbers: [data.Zahl1, data.Zahl2, data.Zahl3, data.Zahl4, data.Zahl5, data.Zahl6, data.Zusatzzahl],
-          amountWon: data.Quote_2_6,
+          amountWon: dataPrize.Quote_2_6,
           date: data.Datum + data.date
         }
       } else {
         calculatedPrize = {
           bestFittingNumbers: [data.Zahl1, data.Zahl2, data.Zahl3, data.Zahl4, data.Zahl5, data.Zahl6, data.Zusatzzahl],
-          amountWon: data.Quote_3_7,
+          amountWon: dataPrize.Quote_3_7,
           date: data.Datum + data.date
         }
       }
@@ -118,7 +119,7 @@ const getPrize = (calculatedResponse, dataset) => {
     case 6:
       calculatedPrize = {
         bestFittingNumbers: [data.Zahl1, data.Zahl2, data.Zahl3, data.Zahl4, data.Zahl5, data.Zahl6, data.Zusatzzahl],
-        amountWon: data.Quote_1_5,
+        amountWon: dataPrize.Quote_1_5,
         date: data.Datum + data.date
       }
       break;
