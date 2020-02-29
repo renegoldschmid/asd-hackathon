@@ -1,7 +1,6 @@
-
-
 const express = require('express');
 const cors = require('cors');
+const predictionService = require('./service/prediction-service');
 const dataManager = require('./service/data');
 const app = express();
 
@@ -13,6 +12,11 @@ const checkMatchingNumbers = (userNumbers, dataset) => {
   let matchedNumbers, highestMatch = 0;
   let matchingIndex = -1;
   let zusatzzahl, zusatzzahlWithMatch = false;
+  let userNumbersWithoutZZ = [];
+
+  for (var i = 0; i < userNumbers.length - 1; i++) {
+    userNumbersWithoutZZ.push(userNumbers[i]);
+  }
 
   // Dataset loop
   for (var i = 0; i < dataset.length; i++) {
@@ -30,8 +34,9 @@ const checkMatchingNumbers = (userNumbers, dataset) => {
       if (i % 2 === 0) {
         // Lottozahlen stehen immer in einer geraden Zeile
 
-        if (key.indexOf('Zahl') === 0) {
-          if (userNumbers.includes(value)) {
+        if (key.indexOf('Zahl') === 0 && value > 0) {
+          
+          if (userNumbersWithoutZZ.includes(value)) {
             matchedNumbers++;
           }
         }
@@ -58,6 +63,7 @@ const getPrize = (calculatedResponse, dataset) => {
   if (calculatedResponse.highestMatch > 4 || (calculatedResponse.highestMatch === 4 && calculatedResponse.zusatzzahl)) {
     console.log('erster index', calculatedResponse.matchingIndex);
     data = dataset[calculatedResponse.matchingIndex];
+    dataPrize = dataset[calculatedResponse.matchingIndex];
   } else if ((calculatedResponse.highestMatch < 4 && calculatedResponse.highestMatch > 2) 
     || (calculatedResponse.highestMatch === 4 && !calculatedResponse.zusatzzahl)) {
     console.log('zweiter index', calculatedResponse.matchingIndex);
@@ -67,7 +73,7 @@ const getPrize = (calculatedResponse, dataset) => {
     return {};
   }
 
-  console.log(data);
+  console.log('highest match', calculatedResponse.highestMatch);
 
   switch(calculatedResponse.highestMatch) {
     case 3:
@@ -132,7 +138,7 @@ const getPrize = (calculatedResponse, dataset) => {
 
 // Root-Route
 app.get('/', (req, res) => {
-  const numbers = req.query.numbers;
+  const numbers = JSON.parse(req.query.numbers);
   console.log(req.query.numbers);
 
   let calculatedMatchingNumbers = checkMatchingNumbers(numbers, dataManager.dataOf2019);
@@ -143,7 +149,7 @@ app.get('/', (req, res) => {
     data: {
       lastAppearence: '',
       bestFittingNumbers: calculatedPrize.bestFittingNumbers,
-      propability: 1,
+      propability: predictionService.calculate(numbers),
       winAmount: calculatedPrize.amountWon,
     },
     success: true
