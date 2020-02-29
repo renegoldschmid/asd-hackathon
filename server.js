@@ -1,5 +1,8 @@
+
+
 const express = require('express');
 const dataManager = require('./service/data');
+const chancesCalculator = require('./service/prediction-service');
 const app = express();
 
 app.use(express.json());
@@ -75,5 +78,5 @@ app.get('/', (req, res) => {
 
 // Start server
 app.listen(3000, () => {
-  console.log('Server running on port 3000.')
+  console.log('Server running on port 3000.');
 });
