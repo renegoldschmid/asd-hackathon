@@ -2,7 +2,6 @@
 
 const express = require('express');
 const dataManager = require('./service/data');
-const chancesCalculator = require('./service/prediction-service');
 const app = express();
 
 app.use(express.json());
