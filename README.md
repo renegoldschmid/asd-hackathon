@@ -1,10 +1,14 @@
 # Million-API-Server - ASD-Hackathon
 
+## Prerequisites
+
+NodeJS and NPM must be installed on your machine.
+
 ## How to start
 
 1. Clone repository
 2. cd into directory
-3. npm start (node/npm must be installed on the computer)
+3. npm start
 
 The server runs on localhost on port 3000. 
 
